@@ -1,0 +1,66 @@
+- hosts: staging
+  tasks:
+    - include_vars: secrets.yml
+
+    - name: Install required build packages
+      apt:
+        name: ["git"]
+
+    - name: Download erlang base package
+      get_url:
+        url: https://packages.erlang-solutions.com/erlang-solutions_2.0_all.deb
+        dest: /opt/erlang-solutions_2.0_all.deb
+
+    - name: Add erlang repository
+      apt:
+        deb: /opt/erlang-solutions_2.0_all.deb
+
+    - name: Update apt cache after adding erlang repository
+      apt: update_cache=yes force_apt_get=yes
+
+    - name: Add the user "phoenix" with a bash shell
+      user:
+        name: phoenix
+        shell: /bin/bash
+
+    - name: Install required erlang packages
+      apt:
+        name: ["esl-erlang", "elixir"]
+
+    - name: Create a new postgres database with name "{{ phoenix_postgres_database }}"
+      community.general.postgresql_db:
+        name: "{{ phoenix_postgres_database }}"
+        state: present
+      become: true
+      become_user: postgres
+
+    - name: Create a new postgres user with name "{{ phoenix_postgres_user }}"
+      community.general.postgresql_user:
+        db: "{{ phoenix_postgres_database }}"
+        name: "{{ phoenix_postgres_user }}"
+        password: "{{ phoenix_postgres_password }}"
+        state: present
+      become: true
+      become_user: postgres
+
+    - name: Git checkout repository
+      git:
+        repo: "https://github.com/ephes/elixir"
+        dest: /home/cast/site
+      become: true
+      become_user: phoenix
+
+    - name: Create .env file
+      template:
+        src: env.template.j2
+        dest: /home/phoenix/site/.env
+        mode: "0600"
+      become: true
+      become_user: phoenix
+
+    - name: Install phoenix
+      shell: mix local.hex
+      args:
+        chdir: /home/cast/site
+      become: true
+      become_user: phoenix
