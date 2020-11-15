@@ -79,15 +79,22 @@
       become: true
       become_user: "{{ user }}"
 
+    - name: Install Javascript dependencies
+      shell: . ./.env && cd assets && npm install
+      args:
+        chdir: "/home/{{ user }}/site"
+      become: true
+      become_user: "{{ user }}"
+
     - name: Javascript assets
-      shell: . ./.env && npm run deploy --prefix ./assets
+      shell: . ./.env && cd assets && npm run deploy
       args:
         chdir: "/home/{{ user }}/site"
       become: true
       become_user: "{{ user }}"
 
     - name: Hash assets
-      shell: . ./.env && phx.digest
+      shell: . ./.env && mix phx.digest
       args:
         chdir: "/home/{{ user }}/site"
       become: true
