@@ -7,7 +7,7 @@ After=network.target
 Type=simple
 Restart=always
 WorkingDirectory=/home/phoenix/site
-User=nuxt
+User=phoenix
 ExecStart=/home/phoenix/site/phoenix_start.sh
 
 [Install]
