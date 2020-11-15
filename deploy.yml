@@ -92,3 +92,20 @@
         chdir: "/home/{{ user }}/site"
       become: true
       become_user: "{{ user }}"
+
+    - name: Create a symbolic link for systemd service
+      file:
+        src: "/home/{{ user }}/site/{{ user }}.service"
+        dest: "/etc/systemd/system/{{ user }}.service"
+        state: link
+
+    - name: Make sure "{{ user }}" service is running
+      systemd:
+        state: restarted
+        name: "{{ user }}"
+
+    - name: Create a symbolic link for traefik loadbalancer
+      file:
+        src: "/home/{{ user }}/site/{{ user }}.traefik.yml"
+        dest: "/etc/traefik/dynamic/{{ user }}.traefik.yml"
+        state: link

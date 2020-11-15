@@ -1,0 +1,14 @@
+# Contents of /etc/systemd/system/multi-user.target.wants/phoenix.service
+[Unit]
+Description=Elixir-Phoenix Test
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+WorkingDirectory=/home/phoenix/site
+User=nuxt
+ExecStart=/home/phoenix/site/phoenix_start.sh
+
+[Install]
+WantedBy=multi-user.target
