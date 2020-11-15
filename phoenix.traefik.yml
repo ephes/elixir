@@ -34,4 +34,4 @@ http:
     phoenix:
       loadBalancer:
         servers:
-          - url: http://localhost:8002
+          - url: http://::1:8002
