@@ -86,9 +86,9 @@
       become: true
       become_user: "{{ user }}"
 
-#    - name: Hash assets
-#      shell: . ./.env && phx.digest
-#      args:
-#        chdir: "/home/{{ user }}/site"
-#      become: true
-#      become_user: "{{ user }}"
+    - name: Hash assets
+      shell: . ./.env && phx.digest
+      args:
+        chdir: "/home/{{ user }}/site"
+      become: true
+      become_user: "{{ user }}"
